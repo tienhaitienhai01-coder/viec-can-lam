@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Việc cần làm</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Việc cần làm">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f1f5f6;--card:#fff;--ink:#14232b;--mute:#6b7c85;--line:#dbe4e8;--acc:#0f766e;--accfg:#fff;--warn:#c2410c;--ok:#9db0b8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a1f;--card:#16262d;--ink:#e8f0f3;--mute:#8da0a9;--line:#263840;--acc:#2dd4bf;--accfg:#06302b;--warn:#fb923c;--ok:#567078}}
+:root[data-theme="dark"]{--bg:#0e1a1f;--card:#16262d;--ink:#e8f0f3;--mute:#8da0a9;--line:#263840;--acc:#2dd4bf;--accfg:#06302b;--warn:#fb923c;--ok:#567078}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+main{max-width:560px;margin:0 auto;padding:16px 16px 96px}
+h1{font-size:26px;margin:8px 0 2px;font-weight:700}
+.sub{color:var(--mute);font-size:14px;margin:0 0 16px}
+.add{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:8px;margin-bottom:14px}
+.add input[type=text]{border:0;background:none;color:var(--ink);font:inherit;font-size:17px;outline:none;padding:6px 4px;width:100%}
+.row{display:flex;gap:8px;align-items:center}
+.row input[type=date]{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;border-radius:10px;padding:8px 10px}
+button{font:inherit;cursor:pointer;border:0;color:inherit;background:none}
+.btn{background:var(--acc);color:var(--accfg);font-weight:700;border-radius:10px;padding:9px 16px}
+.seg{display:flex;background:var(--line);border-radius:10px;padding:2px;margin-bottom:12px}
+.seg button{flex:1;padding:7px;border-radius:8px;font-size:14px;color:var(--mute)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:500}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}
+.chk{width:28px;height:28px;border-radius:50%;border:2px solid var(--acc);flex:none;display:grid;place-items:center;color:var(--accfg)}
+.item.done .chk{background:var(--acc)}
+.item.done .t{text-decoration:line-through;color:var(--ok)}
+.body{flex:1;min-width:0;text-align:left}
+.t{word-break:break-word}
+.d{font-size:13px;color:var(--mute)}
+.d.late{color:var(--warn);font-weight:500}
+.x{color:var(--mute);font-size:22px;line-height:1;padding:6px 8px}
+.grp{font-weight:700;font-size:15px;margin:18px 4px 8px}
+.grp small{color:var(--mute);font-weight:400;margin-left:6px}
+.grp.late{color:var(--warn)}
+.empty{text-align:center;color:var(--mute);padding:36px 12px;font-size:15px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;padding:8px;font-size:13px;color:var(--mute);display:grid;gap:2px;justify-items:center}
+nav button.on{color:var(--acc);font-weight:700}
+nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.badge{background:var(--warn);color:#fff;border-radius:9px;font-size:11px;padding:0 6px;margin-left:4px}
+.swr{display:flex;flex-wrap:wrap;gap:12px;padding:0 4px}
+.sw{width:40px;height:40px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px var(--line)}
+.sw.on{box-shadow:0 0 0 3px var(--ink)}
+.bgr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bgp{padding:12px;border-radius:12px;border:2px solid var(--line);font-size:14px}
+.bgp.on{border-color:var(--acc);font-weight:700}
+input[type=color]{width:56px;height:36px;border:1px solid var(--line);border-radius:8px;background:none;padding:2px}
+.row .d{flex:1}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main>
+ <section id="v1">
+  <h1>Việc cần làm</h1>
+  <p class="sub" id="sum"></p>
+  <div class="add">
+   <input type="text" id="txt" placeholder="Thêm việc mới…" maxlength="200" enterkeyhint="done">
+   <div class="row"><input type="date" id="dt" aria-label="Ngày nhắc"><button class="btn" id="addBtn">Thêm việc</button></div>
+  </div>
+  <div class="seg" id="seg"><button data-f="all" class="on">Tất cả</button><button data-f="open">Chưa xong</button><button data-f="done">Đã xong</button></div>
+  <div id="list"></div>
+ </section>
+ <section id="v2" class="hide">
+  <h1>Lịch nhắc</h1>
+  <p class="sub">Việc chưa xong có ngày, xếp theo thời gian.</p>
+  <div id="cal"></div>
+ </section>
+ <section id="v3" class="hide">
+  <h1>Giao diện</h1>
+  <p class="sub">Thay đổi được áp dụng ngay và tự lưu lại.</p>
+  <div class="grp">Chế độ</div><div class="seg" id="tm"></div>
+  <div class="grp">Màu chủ đạo</div><div class="swr" id="ta"></div>
+  <div class="row" style="margin-top:14px;padding:0 4px"><label for="tc" class="d">Hoặc chọn màu tùy ý</label><input type="color" id="tc" value="#0f766e"></div>
+  <div class="grp">Màu nền</div><div class="bgr" id="tb"></div>
+  <div class="grp">Xem thử</div>
+  <div class="item"><span class="chk"></span><div class="body"><div class="t">Gọi điện cho khách</div><div class="d">Hôm nay</div></div></div>
+  <div class="item done"><span class="chk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><div class="body"><div class="t">Mua cà phê</div></div></div>
+  <button class="btn" id="tr" style="margin-top:16px">Đặt lại mặc định</button>
+ </section>
+</main>
+<nav>
+ <button id="n1" class="on"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>Việc làm</button>
+ <button id="n2"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Lịch nhắc<span class="badge hide" id="bd"></span></button>
+ <button id="n3"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/><path d="M12 21a2.5 2.5 0 0 1 0-5h2"/></svg>Giao diện</button>
+</nav>
+<script>
+var KEY="viec-can-lam-v1",tasks=[],filter="all";
+function load(){try{var r=localStorage.getItem(KEY);tasks=r?JSON.parse(r):[]}catch(e){tasks=[]}
+ if(!Array.isArray(tasks))tasks=[]}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function diff(s){return Math.round((new Date(s+"T00:00:00")-new Date(today()+"T00:00:00"))/864e5)}
+var TH=["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
+function fmt(s){var d=new Date(s+"T00:00:00");return TH[d.getDay()]+", "+d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()}
+function rel(s){var n=diff(s);if(n===0)return"Hôm nay";if(n===1)return"Ngày mai";if(n===-1)return"Hôm qua";if(n<0)return"Quá hạn "+(-n)+" ngày";return"Còn "+n+" ngày"}
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function item(t){
+ var late=t.date&&!t.done&&diff(t.date)<0;
+ return '<div class="item'+(t.done?' done':'')+'"><button class="chk" data-c="'+t.id+'" aria-label="Đánh dấu đã xong">'+(t.done?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>':'')+'</button><div class="body"><div class="t">'+esc(t.text)+'</div>'+(t.date?'<div class="d'+(late?' late':'')+'">'+fmt(t.date)+' · '+rel(t.date)+'</div>':'')+'</div><button class="x" data-x="'+t.id+'" aria-label="Xóa">×</button></div>'}
+function render(){
+ var open=tasks.filter(function(t){return!t.done}).length;
+ $("sum").textContent=tasks.length?(open+" việc chưa xong · "+(tasks.length-open)+" đã xong"):"Chưa có việc nào.";
+ var l=tasks.filter(function(t){return filter==="all"||(filter==="open"?!t.done:t.done)});
+ l.sort(function(a,b){return a.done-b.done||(a.date||"9999").localeCompare(b.date||"9999")||b.id-a.id});
+ $("list").innerHTML=l.length?l.map(item).join(""):'<div class="empty">'+(tasks.length?"Không có việc nào trong mục này.":"Gõ việc đầu tiên ở ô phía trên.<br>Chọn ngày nếu muốn được nhắc.")+'</div>';
+ var up=tasks.filter(function(t){return t.date&&!t.done}).sort(function(a,b){return a.date.localeCompare(b.date)});
+ var g={},order=[];
+ up.forEach(function(t){var k=diff(t.date)<0?"late":t.date;if(!g[k]){g[k]=[];order.push(k)}g[k].push(t)});
+ $("cal").innerHTML=order.length?order.map(function(k){
+  var h=k==="late"?'<div class="grp late">Quá hạn<small>'+g[k].length+' việc</small></div>':'<div class="grp">'+fmt(k)+'<small>'+rel(k)+'</small></div>';
+  return h+g[k].map(item).join("")}).join(""):'<div class="empty">Chưa có việc nào được hẹn ngày.<br>Thêm việc kèm ngày ở tab Việc làm.</div>';
+ var due=up.filter(function(t){return diff(t.date)<=0}).length;
+ $("bd").textContent=due;$("bd").classList.toggle("hide",!due)}
+function add(){var v=$("txt").value.trim();if(!v){$("txt").focus();return}
+ tasks.push({id:Date.now(),text:v,date:$("dt").value||"",done:false});save();$("txt").value="";$("dt").value="";render()}
+function tab(n){[1,2,3].forEach(function(i){$("v"+i).classList.toggle("hide",n!==i);$("n"+i).classList.toggle("on",n===i)});window.scrollTo(0,0)}
+var TKEY="viec-can-lam-theme-v1",th={mode:"auto",acc:0,custom:"",bg:0};
+var ACC=[["Xanh ngọc","#0f766e","#2dd4bf"],["Xanh dương","#1d4ed8","#60a5fa"],["Tím","#7c3aed","#a78bfa"],["Hồng","#be185d","#f472b6"],["Đỏ","#b91c1c","#f87171"],["Cam","#c2410c","#fb923c"],["Xanh lá","#15803d","#4ade80"],["Đen","#18181b","#e4e4e7"]];
+var BG=[["Xanh xám",["#f1f5f6","#ffffff","#dbe4e8"],["#0e1a1f","#16262d","#263840"]],["Trung tính",["#f4f4f5","#ffffff","#e4e4e7"],["#0a0a0a","#171717","#2a2a2a"]],["Be ấm",["#f7f3ec","#fffdf8","#e8dfd0"],["#1a1612","#241f19","#3a3128"]],["Trắng",["#ffffff","#f6f7f8","#e3e6e8"],["#000000","#111111","#262626"]]];
+function isDark(){return th.mode==="dark"||(th.mode==="auto"&&window.matchMedia("(prefers-color-scheme: dark)").matches)}
+function lum(h){var n=parseInt(h.slice(1),16);return(0.299*(n>>16&255)+0.587*(n>>8&255)+0.114*(n&255))/255}
+function loadTheme(){try{var r=localStorage.getItem(TKEY);if(r){var o=JSON.parse(r);th.mode=o.mode||"auto";th.acc=+o.acc||0;th.custom=o.custom||"";th.bg=+o.bg||0}}catch(e){}
+ if(th.acc>=ACC.length)th.acc=0;if(th.bg>=BG.length)th.bg=0;applyTheme()}
+function saveTheme(){try{localStorage.setItem(TKEY,JSON.stringify(th))}catch(e){}}
+function applyTheme(){
+ var d=isDark(),r=document.documentElement,s=r.style;
+ if(th.mode==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",th.mode);
+ var a=th.custom||ACC[th.acc][d?2:1],b=BG[th.bg][d?2:1];
+ s.setProperty("--acc",a);s.setProperty("--accfg",lum(a)>0.6?"#111111":"#ffffff");
+ s.setProperty("--bg",b[0]);s.setProperty("--card",b[1]);s.setProperty("--line",b[2]);
+ var m=document.querySelector("meta[name=theme-color]");if(m)m.content=b[0];
+ drawTheme()}
+function drawTheme(){
+ var d=isDark();
+ $("tm").innerHTML=["auto|Tự động","light|Sáng","dark|Tối"].map(function(x){var p=x.split("|");return '<button data-m="'+p[0]+'"'+(th.mode===p[0]?' class="on"':'')+'>'+p[1]+'</button>'}).join("");
+ $("ta").innerHTML=ACC.map(function(a,i){return '<button class="sw'+(!th.custom&&th.acc===i?' on':'')+'" data-a="'+i+'" style="background:'+a[d?2:1]+'" aria-label="'+a[0]+'"></button>'}).join("");
+ $("tb").innerHTML=BG.map(function(b,i){return '<button class="bgp'+(th.bg===i?' on':'')+'" data-b="'+i+'" style="background:'+b[d?2:1][0]+';color:'+(d?'#ffffff':'#111111')+'">'+b[0]+'</button>'}).join("");
+ $("tc").value=th.custom||ACC[th.acc][d?2:1]}
+document.addEventListener("click",function(e){
+ var m=e.target.closest("[data-m]"),a=e.target.closest("[data-a]"),b=e.target.closest("[data-b]");
+ if(m)th.mode=m.dataset.m;else if(a){th.acc=+a.dataset.a;th.custom=""}else if(b)th.bg=+b.dataset.b;else return;
+ saveTheme();applyTheme()});
+$("tc").addEventListener("input",function(e){th.custom=e.target.value;saveTheme();applyTheme()});
+$("tr").onclick=function(){th={mode:"auto",acc:0,custom:"",bg:0};saveTheme();applyTheme()};
+try{window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){if(th.mode==="auto")applyTheme()})}catch(e){}
+document.addEventListener("click",function(e){
+ var c=e.target.closest("[data-c]"),x=e.target.closest("[data-x]"),f=e.target.closest("[data-f]");
+ if(c){var t=tasks.find(function(z){return z.id==c.dataset.c});if(t){t.done=!t.done;save();render()}}
+ else if(x){tasks=tasks.filter(function(z){return z.id!=x.dataset.x});save();render()}
+ else if(f){filter=f.dataset.f;document.querySelectorAll("#seg button").forEach(function(b){b.classList.toggle("on",b===f)});render()}});
+$("addBtn").onclick=add;
+$("txt").addEventListener("keydown",function(e){if(e.key==="Enter")add()});
+$("n1").onclick=function(){tab(1)};$("n2").onclick=function(){tab(2)};$("n3").onclick=function(){tab(3)};
+load();loadTheme();render();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+document.addEventListener("visibilitychange",function(){if(!document.hidden)render()});
+</script>
+</body>
+</html>
