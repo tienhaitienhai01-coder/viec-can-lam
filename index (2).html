@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b6e69" id="metaThemeColor" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Việc cần làm" />
+  <title>Việc cần làm</title>
+
+  <!-- Tải Tailwind CSS và Font Inter -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Biến màu sắc động cập nhật theo tùy chỉnh của người dùng */
+    :root {
+      --bg-app: #f1f4f6;
+      --bg-card: #ffffff;
+      --bg-input: #eef3f5;
+      --bg-segment: #dde3e7;
+      --bg-pill: #eef3f5;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-subtle: #e2e8f0;
+      --accent: #0b6e69;
+      --accent-soft: rgba(11, 110, 105, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overscroll-behavior-y: none;
+    }
+
+    .app-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .input-surface {
+      background-color: var(--bg-input);
+      color: var(--text-main);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .accent-bg {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .accent-text {
+      color: var(--accent);
+    }
+
+    .accent-soft-bg {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Tùy chỉnh thanh cuộn */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.45);
+      border-radius: 9999px;
+    }
+
+    /* Đồng bộ giao diện input date & time trên mobile và desktop */
+    input[type="date"],
+    input[type="time"] {
+      color: inherit;
+      color-scheme: light;
+      min-height: 46px;
+    }
+    body.dark-mode input[type="date"],
+    body.dark-mode input[type="time"] {
+      color-scheme: dark;
+    }
+
+    /* Hiệu ứng chuyển tab mượt */
+    .tab-panel {
+      animation: fadeSlide 0.2s ease-out;
+    }
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .safe-bottom {
+      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+
+  <!-- Khung chứa chính -->
+  <div class="w-full max-w-xl min-h-screen flex flex-col px-4 sm:px-6 pt-6 pb-28">
+
+    <!-- Header giống hệt ảnh chụp màn hình -->
+    <header class="mb-4">
+      <h1 id="headerTitle" class="text-[28px] font-bold tracking-tight leading-tight">Việc cần làm</h1>
+      <p id="headerSubtitle" class="text-sm mt-1" style="color: var(--text-muted);">Chưa có việc nào.</p>
+    </header>
+
+    <!-- ==================== TAB 1: VIỆC CẦN LÀM ==================== -->
+    <main id="tab-tasks" class="tab-panel flex-1 space-y-4">
+
+      <!-- Card nhập liệu chính màu trắng bo góc 18px -->
+      <section class="app-card rounded-[18px] p-4 sm:p-5 shadow-sm space-y-3.5">
+
+        <!-- Ô input lớn bo góc 12px với viền màu chủ đạo -->
+        <div>
+          <input
+            id="taskInput"
+            type="text"
+            placeholder="Thêm việc mới..."
+            autocomplete="off"
+            class="input-surface w-full rounded-[12px] px-4 py-3.5 text-base font-normal outline-none placeholder:opacity-65 border-2 transition-shadow focus:shadow-sm"
+            style="border-color: var(--accent);"
+          />
+        </div>
+
+        <!-- Nhãn & hàng nút chọn nhanh dạng viên thuốc (đã bỏ nút "Bỏ giờ") -->
+        <div class="space-y-2">
+          <p class="text-[13px] font-medium" style="color: var(--text-muted);">Nhắc vào ngày (không bắt buộc)</p>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" data-quick-date="today" class="quick-date-btn px-3.5 py-2 rounded-full text-[13px] font-medium transition-all border">
+              Hôm nay
+            </button>
+            <button type="button" data-quick-date="tomorrow" class="quick-date-btn px-3.5 py-2 rounded-full text-[13px] font-medium transition-all border">
+              Ngày mai
+            </button>
+            <button type="button" data-quick-date="nextWeek" class="quick-date-btn px-3.5 py-2 rounded-full text-[13px] font-medium transition-all border">
+              Tuần sau
+            </button>
+            <button type="button" data-quick-date="none" class="quick-date-btn px-3.5 py-2 rounded-full text-[13px] font-medium transition-all border">
+              Không ngày
+            </button>
+          </div>
+        </div>
+
+        <!-- Nhãn trạng thái ngày & Ô chọn ngày -->
+        <div class="space-y-1.5">
+          <label for="taskDateInput" id="dateStatusLabel" class="block text-[13px] font-medium" style="color: var(--text-muted);">
+            Chưa chọn ngày nhắc
+          </label>
+          <div class="relative">
+            <input
+              id="taskDateInput"
+              type="date"
+              class="input-surface w-full rounded-[12px] px-4 py-2.5 text-sm font-medium outline-none border cursor-pointer"
+              style="border-color: var(--border-subtle);"
+            />
+          </div>
+        </div>
+
+        <!-- Nhãn & Ô chọn giờ nhắc chuông -->
+        <div class="space-y-1.5">
+          <label for="taskTimeInput" class="block text-[13px] font-medium" style="color: var(--text-muted);">
+            Giờ nhắc chuông (không bắt buộc)
+          </label>
+          <div class="relative">
+            <input
+              id="taskTimeInput"
+              type="time"
+              class="input-surface w-full rounded-[12px] px-4 py-2.5 text-sm font-medium outline-none border cursor-pointer"
+              style="border-color: var(--border-subtle);"
+            />
+          </div>
+        </div>
+
+        <!-- Nút bấm lớn toàn chiều rộng -->
+        <button
+          id="addTaskBtn"
+          type="button"
+          class="accent-bg w-full py-3.5 rounded-[12px] font-bold text-[15px] shadow-sm active:scale-[0.99] transition-transform cursor-pointer"
+        >
+          Thêm việc
+        </button>
+      </section>
+
+      <!-- Thanh chuyển tab dạng segmented control: Tất cả / Chưa xong / Đã xong -->
+      <div class="p-1 rounded-[12px] grid grid-cols-3 gap-1" style="background-color: var(--bg-segment);">
+        <button type="button" data-filter="all" class="filter-btn py-2 rounded-[9px] text-[13px] transition-all">
+          Tất cả
+        </button>
+        <button type="button" data-filter="pending" class="filter-btn py-2 rounded-[9px] text-[13px] transition-all">
+          Chưa xong
+        </button>
+        <button type="button" data-filter="completed" class="filter-btn py-2 rounded-[9px] text-[13px] transition-all">
+          Đã xong
+        </button>
+      </div>
+
+      <!-- Khu vực danh sách công việc -->
+      <section class="pt-1">
+        <div id="taskList" class="space-y-2.5"></div>
+
+        <!-- Trạng thái trống căn giữa giống hệt ảnh -->
+        <div id="emptyTaskState" class="text-center py-10 px-4">
+          <p id="emptyPrimaryText" class="text-sm font-normal" style="color: var(--text-muted);">
+            Gõ việc đầu tiên ở ô phía trên.
+          </p>
+          <p id="emptySecondaryText" class="text-sm font-normal mt-1" style="color: var(--text-muted);">
+            Chọn ngày nếu muốn được nhắc.
+          </p>
+        </div>
+
+        <!-- Nút dọn nhanh việc đã xong (chỉ hiện khi đang xem tab Đã xong và có việc) -->
+        <div id="clearCompletedWrap" class="hidden pt-3 text-center">
+          <button
+            id="clearCompletedBtn"
+            type="button"
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-rose-600 bg-rose-500/10 hover:bg-rose-500/15 active:scale-95 transition"
+          >
+            Xóa tất cả việc đã xong
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== TAB 2: LỊCH NHẮC ==================== -->
+    <section id="tab-schedule" class="tab-panel hidden flex-1 space-y-5">
+      <div id="scheduleContainer" class="space-y-5"></div>
+
+      <div id="emptyScheduleState" class="hidden text-center py-14 px-4">
+        <div class="w-12 h-12 rounded-2xl accent-soft-bg flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+        </div>
+        <p class="font-medium text-sm">Chưa có việc nào có lịch nhắc</p>
+        <p class="text-xs mt-1" style="color: var(--text-muted);">Các công việc chưa xong có chọn ngày nhắc sẽ tự động xếp tại đây.</p>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: GIAO DIỆN ==================== -->
+    <section id="tab-theme" class="tab-panel hidden flex-1 space-y-5">
+
+      <!-- Khung Xem thử trực quan -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Xem thử</span>
+          <span class="text-[11px]" style="color: var(--text-muted);">Tự động lưu thay đổi</span>
+        </div>
+
+        <div class="rounded-[18px] p-4 border space-y-3" style="background-color: var(--bg-app); border-color: var(--border-subtle);">
+          <!-- Ô nhập mẫu -->
+          <div class="input-surface rounded-[12px] px-3.5 py-2.5 text-xs font-medium border-2" style="border-color: var(--accent); color: var(--text-muted);">
+            Thêm việc mới...
+          </div>
+
+          <!-- Thẻ mẫu 1 -->
+          <div class="app-card rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0" style="border-color: var(--accent);"></span>
+              <div class="truncate">
+                <p class="text-sm font-medium truncate">Gọi điện cho khách</p>
+                <span class="inline-block mt-1 px-2 py-0.5 rounded-md text-[11px] font-semibold accent-soft-bg">
+                  Hôm nay · 09:30
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ mẫu 2 -->
+          <div class="app-card rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-5 h-5 rounded-full accent-bg flex items-center justify-center shrink-0">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+              </span>
+              <p class="text-sm font-medium line-through opacity-55 truncate">Mua cà phê</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bảng điều khiển tùy biến màu sắc -->
+      <div class="app-card rounded-[18px] p-4 sm:p-5 space-y-5 shadow-sm">
+
+        <!-- 1. Chế độ Sáng / Tối -->
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold" style="color: var(--text-muted);">Chế độ</label>
+          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl border" style="border-color: var(--border-subtle); background-color: var(--bg-segment);">
+            <button type="button" id="modeLightBtn" class="py-2 rounded-lg text-xs font-semibold transition-all">
+              ☀️ Sáng
+            </button>
+            <button type="button" id="modeDarkBtn" class="py-2 rounded-lg text-xs font-semibold transition-all">
+              🌙 Tối
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Màu chủ đạo -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-semibold" style="color: var(--text-muted);">Màu chủ đạo</label>
+            <span id="accentHexLabel" class="text-[11px] font-mono uppercase" style="color: var(--text-muted);">#0B6E69</span>
+          </div>
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div id="accentPresets" class="flex items-center gap-2.5 flex-wrap"></div>
+            <label class="w-8 h-8 rounded-full border flex items-center justify-center cursor-pointer overflow-hidden shrink-0" style="border-color: var(--border-subtle);" title="Chọn màu chủ đạo tùy ý">
+              <input id="accentPicker" type="color" class="w-10 h-10 cursor-pointer border-0 bg-transparent p-0" />
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Màu nền -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label for="bgColorPicker" class="text-xs font-semibold" style="color: var(--text-muted);">Màu nền</label>
+            <button type="button" id="resetBgBtn" class="text-[11px] font-medium accent-text hover:underline">Đặt lại mặc định</button>
+          </div>
+          <label class="flex items-center justify-between px-3.5 py-2.5 rounded-xl border cursor-pointer" style="border-color: var(--border-subtle);">
+            <span id="bgHexLabel" class="text-xs font-mono uppercase">#F1F4F6</span>
+            <input id="bgColorPicker" type="color" class="w-7 h-7 rounded cursor-pointer border-0 bg-transparent p-0" />
+          </label>
+        </div>
+
+        <!-- 4. Màu khung ô nhập việc -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label for="inputColorPicker" class="text-xs font-semibold" style="color: var(--text-muted);">Màu khung ô nhập việc</label>
+            <button type="button" id="resetInputColorBtn" class="text-[11px] font-medium accent-text hover:underline">Đặt lại mặc định</button>
+          </div>
+          <label class="flex items-center justify-between px-3.5 py-2.5 rounded-xl border cursor-pointer" style="border-color: var(--border-subtle);">
+            <span id="inputHexLabel" class="text-xs font-mono uppercase">#EEF3F5</span>
+            <input id="inputColorPicker" type="color" class="w-7 h-7 rounded cursor-pointer border-0 bg-transparent p-0" />
+          </label>
+        </div>
+
+        <!-- Khôi phục toàn bộ mặc định -->
+        <div class="pt-2 border-t" style="border-color: var(--border-subtle);">
+          <button id="resetThemeBtn" type="button" class="w-full py-2.5 rounded-xl text-xs font-semibold border hover:opacity-80 active:scale-[0.99] transition" style="border-color: var(--border-subtle);">
+            Khôi phục giao diện mặc định
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Thanh điều hướng dưới cùng (Bottom Navigation) -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 border-t backdrop-blur-md safe-bottom" style="background-color: color-mix(in srgb, var(--bg-card) 92%, transparent); border-color: var(--border-subtle);">
+    <div class="max-w-xl mx-auto grid grid-cols-3 px-2 pt-2">
+      <button type="button" data-tab="tasks" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition-colors">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-[11px] font-semibold">Việc cần làm</span>
+      </button>
+
+      <button type="button" data-tab="schedule" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition-colors">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+        <span class="text-[11px] font-semibold">Lịch nhắc</span>
+      </button>
+
+      <button type="button" data-tab="theme" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl transition-colors">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z" />
+        </svg>
+        <span class="text-[11px] font-semibold">Giao diện</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Toast thông báo nhỏ gọn -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full text-xs font-medium shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 accent-bg">
+    Đã lưu
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEYS = {
+        TASKS: 'viec_can_lam_tasks_v3',
+        THEME: 'viec_can_lam_theme_v3'
+      };
+
+      // Bảng màu mặc định chuẩn ảnh chụp màn hình (#0b6e69, #f1f4f6, #eef3f5)
+      const DEFAULT_THEMES = {
+        light: {
+          mode: 'light',
+          accent: '#0b6e69',
+          bg: '#f1f4f6',
+          inputBg: '#eef3f5'
+        },
+        dark: {
+          mode: 'dark',
+          accent: '#14b8a6',
+          bg: '#0f172a',
+          inputBg: '#1e293b'
+        }
+      };
+
+      // Các màu chủ đạo gợi ý nhanh (đứng đầu là #0b6e69)
+      const ACCENT_PRESETS = ['#0b6e69', '#2563eb', '#d97706', '#7c3aed', '#e11d48', '#059669'];
+
+      // Trạng thái ứng dụng
+      let tasks = [];
+      let theme = { ...DEFAULT_THEMES.light };
+      let currentFilter = 'all'; // 'all' | 'pending' | 'completed'
+      let activeTab = 'tasks'; // 'tasks' | 'schedule' | 'theme'
+      let clearAllConfirmTimer = null;
+      let isConfirmingClearAll = false;
+
+      // Tham chiếu DOM
+      const headerTitle = document.getElementById('headerTitle');
+      const headerSubtitle = document.getElementById('headerSubtitle');
+      const taskInput = document.getElementById('taskInput');
+      const quickDateBtns = document.querySelectorAll('.quick-date-btn');
+      const dateStatusLabel = document.getElementById('dateStatusLabel');
+      const taskDateInput = document.getElementById('taskDateInput');
+      const taskTimeInput = document.getElementById('taskTimeInput');
+      const addTaskBtn = document.getElementById('addTaskBtn');
+
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const taskList = document.getElementById('taskList');
+      const emptyTaskState = document.getElementById('emptyTaskState');
+      const emptyPrimaryText = document.getElementById('emptyPrimaryText');
+      const emptySecondaryText = document.getElementById('emptySecondaryText');
+      const clearCompletedWrap = document.getElementById('clearCompletedWrap');
+      const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+
+      const scheduleContainer = document.getElementById('scheduleContainer');
+      const emptyScheduleState = document.getElementById('emptyScheduleState');
+      const navBtns = document.querySelectorAll('.nav-btn');
+
+      // DOM Tab Giao diện
+      const modeLightBtn = document.getElementById('modeLightBtn');
+      const modeDarkBtn = document.getElementById('modeDarkBtn');
+      const accentPresetsContainer = document.getElementById('accentPresets');
+      const accentPicker = document.getElementById('accentPicker');
+      const accentHexLabel = document.getElementById('accentHexLabel');
+      const bgColorPicker = document.getElementById('bgColorPicker');
+      const bgHexLabel = document.getElementById('bgHexLabel');
+      const resetBgBtn = document.getElementById('resetBgBtn');
+      const inputColorPicker = document.getElementById('inputColorPicker');
+      const inputHexLabel = document.getElementById('inputHexLabel');
+      const resetInputColorBtn = document.getElementById('resetInputColorBtn');
+      const resetThemeBtn = document.getElementById('resetThemeBtn');
+      const toastEl = document.getElementById('toast');
+
+      // Tiện ích tính ngày YYYY-MM-DD theo múi giờ địa phương
+      function getLocalDateStr(offsetDays = 0) {
+        const d = new Date();
+        d.setDate(d.getDate() + offsetDays);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      // Định dạng YYYY-MM-DD thành dd/mm/yyyy
+      function formatFullDateVN(dateStr) {
+        if (!dateStr) return '';
+        const [y, m, d] = dateStr.split('-');
+        return `${d}/${m}/${y}`;
+      }
+
+      // Phân tích nhãn hiển thị cho badge ngày
+      function getDateBadgeInfo(dateStr) {
+        if (!dateStr) return null;
+        const todayStr = getLocalDateStr(0);
+        const tomorrowStr = getLocalDateStr(1);
+
+        if (dateStr === todayStr) {
+          return { label: 'Hôm nay', type: 'today' };
+        }
+        if (dateStr === tomorrowStr) {
+          return { label: 'Ngày mai', type: 'tomorrow' };
+        }
+        if (dateStr < todayStr) {
+          const [, m, d] = dateStr.split('-');
+          return { label: `Quá hạn (${d}/${m})`, type: 'overdue' };
+        }
+        const [y, m, d] = dateStr.split('-');
+        const currentYear = String(new Date().getFullYear());
+        const formatted = y === currentYear ? `${d}/${m}` : `${d}/${m}/${y}`;
+        return { label: formatted, type: 'upcoming' };
+      }
+
+      // Toast thông báo
+      let toastTimeout;
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.remove('opacity-0');
+        toastEl.classList.add('opacity-100');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toastEl.classList.remove('opacity-100');
+          toastEl.classList.add('opacity-0');
+        }, 1800);
+      }
+
+      // Đọc / Ghi localStorage
+      function loadState() {
+        try {
+          const rawTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
+          tasks = rawTasks ? JSON.parse(rawTasks) : [];
+          if (!Array.isArray(tasks)) tasks = [];
+        } catch (e) {
+          tasks = [];
+        }
+
+        try {
+          const rawTheme = localStorage.getItem(STORAGE_KEYS.THEME);
+          if (rawTheme) {
+            theme = { ...DEFAULT_THEMES.light, ...JSON.parse(rawTheme) };
+          }
+        } catch (e) {
+          theme = { ...DEFAULT_THEMES.light };
+        }
+      }
+
+      function saveTasks() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
+        } catch (e) {
+          showToast('Không thể lưu dữ liệu');
+        }
+      }
+
+      function saveTheme() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.THEME, JSON.stringify(theme));
+        } catch (e) {
+          // Bỏ qua nếu bộ nhớ đầy
+        }
+      }
+
+      function hexToRgba(hex, alpha) {
+        const clean = hex.replace('#', '');
+        if (clean.length !== 6) return `rgba(11, 110, 105, ${alpha})`;
+        const r = parseInt(clean.substring(0, 2), 16);
+        const g = parseInt(clean.substring(2, 4), 16);
+        const b = parseInt(clean.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+
+      // Áp dụng cấu hình màu sắc
+      function applyTheme() {
+        const root = document.documentElement;
+        const isDark = theme.mode === 'dark';
+
+        root.style.setProperty('--bg-app', theme.bg);
+        root.style.setProperty('--bg-card', isDark ? '#1e293b' : '#ffffff');
+        root.style.setProperty('--bg-input', theme.inputBg);
+        root.style.setProperty('--bg-pill', isDark ? '#273548' : '#eef3f5');
+        root.style.setProperty('--bg-segment', isDark ? '#1e293b' : '#dde3e7');
+        root.style.setProperty('--accent', theme.accent);
+        root.style.setProperty('--accent-soft', hexToRgba(theme.accent, isDark ? 0.22 : 0.12));
+        root.style.setProperty('--text-main', isDark ? '#f8fafc' : '#0f172a');
+        root.style.setProperty('--text-muted', isDark ? '#94a3b8' : '#64748b');
+        root.style.setProperty('--border-subtle', isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0');
+
+        document.body.classList.toggle('dark-mode', isDark);
+
+        const metaTheme = document.getElementById('metaThemeColor');
+        if (metaTheme) metaTheme.setAttribute('content', theme.accent);
+
+        // Trạng thái nút Sáng / Tối
+        if (isDark) {
+          modeDarkBtn.style.backgroundColor = '#0f172a';
+          modeDarkBtn.style.color = '#f8fafc';
+          modeDarkBtn.classList.add('shadow-sm');
+          modeLightBtn.style.backgroundColor = 'transparent';
+          modeLightBtn.style.color = 'var(--text-muted)';
+          modeLightBtn.classList.remove('shadow-sm');
+        } else {
+          modeLightBtn.style.backgroundColor = '#ffffff';
+          modeLightBtn.style.color = '#0f172a';
+          modeLightBtn.classList.add('shadow-sm');
+          modeDarkBtn.style.backgroundColor = 'transparent';
+          modeDarkBtn.style.color = 'var(--text-muted)';
+          modeDarkBtn.classList.remove('shadow-sm');
+        }
+
+        // Cập nhật giá trị ô chọn màu
+        accentPicker.value = theme.accent;
+        accentHexLabel.textContent = theme.accent.toUpperCase();
+        bgColorPicker.value = theme.bg;
+        bgHexLabel.textContent = theme.bg.toUpperCase();
+        inputColorPicker.value = theme.inputBg;
+        inputHexLabel.textContent = theme.inputBg.toUpperCase();
+
+        renderAccentPresets();
+        updateDatePillsUI();
+        updateFilterTabsUI();
+      }
+
+      // Render các ô màu gợi ý
+      function renderAccentPresets() {
+        accentPresetsContainer.innerHTML = '';
+        ACCENT_PRESETS.forEach((color) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'w-7 h-7 rounded-full transition-transform active:scale-90';
+          btn.style.backgroundColor = color;
+          if (theme.accent.toLowerCase() === color.toLowerCase()) {
+            btn.style.boxShadow = `0 0 0 2px var(--bg-card), 0 0 0 4px ${color}`;
+          }
+          btn.addEventListener('click', () => {
+            theme.accent = color;
+            applyTheme();
+            saveTheme();
+          });
+          accentPresetsContainer.appendChild(btn);
+        });
+      }
+
+      // Cập nhật trạng thái hàng nút chọn ngày dạng viên thuốc & nhãn trạng thái ngày
+      function updateDatePillsUI() {
+        const val = taskDateInput.value;
+        const todayStr = getLocalDateStr(0);
+        const tomorrowStr = getLocalDateStr(1);
+        const nextWeekStr = getLocalDateStr(7);
+
+        let activeKey = null;
+        if (!val) {
+          activeKey = 'none';
+          dateStatusLabel.textContent = 'Chưa chọn ngày nhắc';
+        } else {
+          if (val === todayStr) activeKey = 'today';
+          else if (val === tomorrowStr) activeKey = 'tomorrow';
+          else if (val === nextWeekStr) activeKey = 'nextWeek';
+          dateStatusLabel.textContent = `Ngày nhắc: ${formatFullDateVN(val)}`;
+        }
+
+        quickDateBtns.forEach((btn) => {
+          const isSelected = btn.dataset.quickDate === activeKey;
+          if (isSelected) {
+            btn.style.backgroundColor = 'var(--accent)';
+            btn.style.color = '#ffffff';
+            btn.style.borderColor = 'var(--accent)';
+            btn.classList.add('font-semibold');
+          } else {
+            btn.style.backgroundColor = 'var(--bg-pill)';
+            btn.style.color = 'var(--text-main)';
+            btn.style.borderColor = 'var(--border-subtle)';
+            btn.classList.remove('font-semibold');
+          }
+        });
+      }
+
+      // Cập nhật giao diện thanh segmented control (Tất cả / Chưa xong / Đã xong)
+      function updateFilterTabsUI() {
+        filterBtns.forEach((btn) => {
+          const isActive = btn.dataset.filter === currentFilter;
+          if (isActive) {
+            btn.style.backgroundColor = 'var(--bg-card)';
+            btn.style.color = 'var(--text-main)';
+            btn.classList.add('font-bold', 'shadow-sm');
+            btn.classList.remove('font-medium');
+          } else {
+            btn.style.backgroundColor = 'transparent';
+            btn.style.color = 'var(--text-muted)';
+            btn.classList.remove('font-bold', 'shadow-sm');
+            btn.classList.add('font-medium');
+          }
+        });
+      }
+
+      // Cập nhật tiêu đề phụ phía dưới "Việc cần làm"
+      function updateHeaderSubtitle() {
+        if (activeTab === 'tasks') {
+          headerTitle.textContent = 'Việc cần làm';
+          const pendingCount = tasks.filter((t) => !t.completed).length;
+          if (tasks.length === 0) {
+            headerSubtitle.textContent = 'Chưa có việc nào.';
+          } else if (pendingCount === 0) {
+            headerSubtitle.textContent = 'Đã hoàn thành tất cả công việc!';
+          } else {
+            headerSubtitle.textContent = `${pendingCount} việc chưa xong`;
+          }
+        } else if (activeTab === 'schedule') {
+          headerTitle.textContent = 'Lịch nhắc';
+          const datedPending = tasks.filter((t) => !t.completed && t.date).length;
+          headerSubtitle.textContent = datedPending > 0
+            ? `${datedPending} việc có lịch nhắc`
+            : 'Chưa có lịch nhắc nào.';
+        } else {
+          headerTitle.textContent = 'Giao diện';
+          headerSubtitle.textContent = 'Tùy biến màu sắc theo sở thích của bạn';
+        }
+      }
+
+      // Tạo thẻ công việc
+      function createTaskElement(task) {
+        const item = document.createElement('div');
+        item.className = 'app-card rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-sm';
+
+        const leftWrap = document.createElement('div');
+        leftWrap.className = 'flex items-start gap-3 flex-1 min-w-0 cursor-pointer select-none';
+        leftWrap.addEventListener('click', () => toggleTask(task.id));
+
+        const checkCircle = document.createElement('span');
+        checkCircle.className = 'w-5 h-5 mt-0.5 rounded-full flex items-center justify-center shrink-0 transition-colors';
+        if (task.completed) {
+          checkCircle.classList.add('accent-bg');
+          checkCircle.innerHTML = `<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`;
+        } else {
+          checkCircle.style.border = '2px solid var(--accent)';
+        }
+
+        const textWrap = document.createElement('div');
+        textWrap.className = 'flex-1 min-w-0';
+
+        const titleEl = document.createElement('p');
+        titleEl.className = `text-sm font-medium break-words leading-snug ${task.completed ? 'line-through opacity-50' : ''}`;
+        titleEl.textContent = task.text;
+        textWrap.appendChild(titleEl);
+
+        // Hiển thị badge ngày và/hoặc giờ nhắc
+        const badgeInfo = getDateBadgeInfo(task.date);
+        if (badgeInfo || task.time) {
+          const badge = document.createElement('span');
+          badge.className = 'inline-flex items-center gap-1 mt-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold';
+
+          if (task.completed) {
+            badge.style.backgroundColor = 'rgba(148, 163, 184, 0.16)';
+            badge.style.color = 'var(--text-muted)';
+          } else if (badgeInfo && badgeInfo.type === 'overdue') {
+            badge.classList.add('bg-rose-500/15', 'text-rose-600');
+          } else {
+            badge.classList.add('accent-soft-bg');
+          }
+
+          const parts = [];
+          if (badgeInfo) parts.push(badgeInfo.label);
+          if (task.time) parts.push(task.time);
+          badge.textContent = parts.join(' · ');
+          textWrap.appendChild(badge);
+        }
+
+        leftWrap.appendChild(checkCircle);
+        leftWrap.appendChild(textWrap);
+
+        // Nút xóa việc
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.ariaLabel = 'Xóa công việc';
+        deleteBtn.className = 'p-2 rounded-xl text-rose-500/80 hover:text-rose-600 hover:bg-rose-500/10 active:scale-90 transition shrink-0';
+        deleteBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>`;
+        deleteBtn.addEventListener('click', () => deleteTask(task.id));
+
+        item.appendChild(leftWrap);
+        item.appendChild(deleteBtn);
+        return item;
+      }
+
+      // Render toàn bộ danh sách & lịch nhắc
+      function renderAll() {
+        updateHeaderSubtitle();
+        updateFilterTabsUI();
+
+        let filtered = tasks;
+        if (currentFilter === 'pending') {
+          filtered = tasks.filter((t) => !t.completed);
+        } else if (currentFilter === 'completed') {
+          filtered = tasks.filter((t) => t.completed);
+        }
+
+        taskList.innerHTML = '';
+
+        if (filtered.length === 0) {
+          emptyTaskState.classList.remove('hidden');
+          if (currentFilter === 'all') {
+            emptyPrimaryText.textContent = 'Gõ việc đầu tiên ở ô phía trên.';
+            emptySecondaryText.textContent = 'Chọn ngày nếu muốn được nhắc.';
+            emptySecondaryText.classList.remove('hidden');
+          } else if (currentFilter === 'pending') {
+            emptyPrimaryText.textContent = 'Không có việc nào chưa xong.';
+            emptySecondaryText.classList.add('hidden');
+          } else {
+            emptyPrimaryText.textContent = 'Chưa có việc nào hoàn thành.';
+            emptySecondaryText.classList.add('hidden');
+          }
+        } else {
+          emptyTaskState.classList.add('hidden');
+          filtered.forEach((task) => {
+            taskList.appendChild(createTaskElement(task));
+          });
+        }
+
+        // Nút dọn nhanh việc đã xong ở tab "Đã xong"
+        const completedTotal = tasks.filter((t) => t.completed).length;
+        if (currentFilter === 'completed' && completedTotal > 0) {
+          clearCompletedWrap.classList.remove('hidden');
+        } else {
+          clearCompletedWrap.classList.add('hidden');
+        }
+
+        renderScheduleTab();
+      }
+
+      // Render Tab Lịch nhắc (các việc chưa xong có gắn ngày, sắp xếp theo thời gian)
+      function renderScheduleTab() {
+        const datedPending = tasks
+          .filter((t) => !t.completed && Boolean(t.date))
+          .sort((a, b) => {
+            const cmp = a.date.localeCompare(b.date);
+            if (cmp !== 0) return cmp;
+            return (a.time || '99:99').localeCompare(b.time || '99:99');
+          });
+
+        scheduleContainer.innerHTML = '';
+
+        if (datedPending.length === 0) {
+          emptyScheduleState.classList.remove('hidden');
+          return;
+        }
+        emptyScheduleState.classList.add('hidden');
+
+        const todayStr = getLocalDateStr(0);
+        const tomorrowStr = getLocalDateStr(1);
+
+        const groups = [
+          { title: 'Quá hạn', accentClass: 'text-rose-600', items: [] },
+          { title: 'Hôm nay', accentClass: 'accent-text', items: [] },
+          { title: 'Ngày mai', accentClass: '', items: [] },
+          { title: 'Sắp tới', accentClass: '', items: [] }
+        ];
+
+        datedPending.forEach((task) => {
+          if (task.date < todayStr) groups[0].items.push(task);
+          else if (task.date === todayStr) groups[1].items.push(task);
+          else if (task.date === tomorrowStr) groups[2].items.push(task);
+          else groups[3].items.push(task);
+        });
+
+        groups.forEach((group) => {
+          if (group.items.length === 0) return;
+
+          const section = document.createElement('div');
+          section.className = 'space-y-2.5';
+
+          const heading = document.createElement('div');
+          heading.className = 'flex items-center justify-between px-1';
+          heading.innerHTML = `
+            <h2 class="text-xs font-bold uppercase tracking-wider ${group.accentClass}" ${!group.accentClass ? 'style="color: var(--text-muted);"' : ''}>
+              ${group.title}
+            </h2>
+            <span class="text-xs font-semibold" style="color: var(--text-muted);">${group.items.length}</span>
+          `;
+
+          const list = document.createElement('div');
+          list.className = 'space-y-2';
+          group.items.forEach((t) => list.appendChild(createTaskElement(t)));
+
+          section.appendChild(heading);
+          section.appendChild(list);
+          scheduleContainer.appendChild(section);
+        });
+      }
+
+      // Thêm việc mới
+      function addTask() {
+        const text = taskInput.value.trim();
+        if (!text) {
+          taskInput.focus();
+          return;
+        }
+
+        const newTask = {
+          id: Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+          text,
+          date: taskDateInput.value || '',
+          time: taskTimeInput.value || '',
+          completed: false,
+          createdAt: Date.now()
+        };
+
+        tasks.unshift(newTask);
+        saveTasks();
+        renderAll();
+
+        taskInput.value = '';
+        taskDateInput.value = '';
+        taskTimeInput.value = '';
+        updateDatePillsUI();
+        showToast('Đã thêm việc mới');
+      }
+
+      function toggleTask(id) {
+        const target = tasks.find((t) => t.id === id);
+        if (!target) return;
+        target.completed = !target.completed;
+        saveTasks();
+        renderAll();
+      }
+
+      function deleteTask(id) {
+        tasks = tasks.filter((t) => t.id !== id);
+        saveTasks();
+        renderAll();
+        showToast('Đã xóa công việc');
+      }
+
+      // Chuyển tab dưới đáy
+      function switchTab(tabName) {
+        activeTab = tabName;
+
+        document.getElementById('tab-tasks').classList.toggle('hidden', tabName !== 'tasks');
+        document.getElementById('tab-schedule').classList.toggle('hidden', tabName !== 'schedule');
+        document.getElementById('tab-theme').classList.toggle('hidden', tabName !== 'theme');
+
+        updateHeaderSubtitle();
+
+        navBtns.forEach((btn) => {
+          const isCurrent = btn.dataset.tab === tabName;
+          if (isCurrent) {
+            btn.classList.add('accent-text');
+            btn.style.color = '';
+          } else {
+            btn.classList.remove('accent-text');
+            btn.style.color = 'var(--text-muted)';
+          }
+        });
+      }
+
+      // Gắn sự kiện tương tác
+      function bindEvents() {
+        addTaskBtn.addEventListener('click', addTask);
+        taskInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            addTask();
+          }
+        });
+
+        // Hàng nút chọn nhanh dạng viên thuốc
+        quickDateBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const type = btn.dataset.quickDate;
+            if (type === 'today') {
+              taskDateInput.value = getLocalDateStr(0);
+            } else if (type === 'tomorrow') {
+              taskDateInput.value = getLocalDateStr(1);
+            } else if (type === 'nextWeek') {
+              taskDateInput.value = getLocalDateStr(7);
+            } else {
+              taskDateInput.value = '';
+            }
+            updateDatePillsUI();
+          });
+        });
+
+        taskDateInput.addEventListener('change', updateDatePillsUI);
+
+        // Thanh segmented control: Tất cả / Chưa xong / Đã xong
+        filterBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            currentFilter = btn.dataset.filter;
+            renderAll();
+          });
+        });
+
+        // Xác nhận 2 chạm để xóa toàn bộ việc đã xong
+        clearCompletedBtn.addEventListener('click', () => {
+          if (!isConfirmingClearAll) {
+            isConfirmingClearAll = true;
+            clearCompletedBtn.textContent = 'Bấm lại để xác nhận xóa';
+            clearAllConfirmTimer = setTimeout(() => {
+              isConfirmingClearAll = false;
+              clearCompletedBtn.textContent = 'Xóa tất cả việc đã xong';
+            }, 3000);
+          } else {
+            clearTimeout(clearAllConfirmTimer);
+            isConfirmingClearAll = false;
+            clearCompletedBtn.textContent = 'Xóa tất cả việc đã xong';
+            tasks = tasks.filter((t) => !t.completed);
+            saveTasks();
+            renderAll();
+            showToast('Đã xóa việc đã xong');
+          }
+        });
+
+        navBtns.forEach((btn) => {
+          btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // Tùy biến giao diện
+        modeLightBtn.addEventListener('click', () => {
+          theme = { ...DEFAULT_THEMES.light, accent: theme.accent };
+          applyTheme();
+          saveTheme();
+        });
+
+        modeDarkBtn.addEventListener('click', () => {
+          theme = { ...DEFAULT_THEMES.dark, accent: theme.accent };
+          applyTheme();
+          saveTheme();
+        });
+
+        accentPicker.addEventListener('input', (e) => {
+          theme.accent = e.target.value;
+          applyTheme();
+          saveTheme();
+        });
+
+        bgColorPicker.addEventListener('input', (e) => {
+          theme.bg = e.target.value;
+          applyTheme();
+          saveTheme();
+        });
+
+        resetBgBtn.addEventListener('click', () => {
+          theme.bg = theme.mode === 'dark' ? DEFAULT_THEMES.dark.bg : DEFAULT_THEMES.light.bg;
+          applyTheme();
+          saveTheme();
+          showToast('Đã đặt lại màu nền');
+        });
+
+        inputColorPicker.addEventListener('input', (e) => {
+          theme.inputBg = e.target.value;
+          applyTheme();
+          saveTheme();
+        });
+
+        resetInputColorBtn.addEventListener('click', () => {
+          theme.inputBg = theme.mode === 'dark' ? DEFAULT_THEMES.dark.inputBg : DEFAULT_THEMES.light.inputBg;
+          applyTheme();
+          saveTheme();
+          showToast('Đã đặt lại màu khung nhập');
+        });
+
+        resetThemeBtn.addEventListener('click', () => {
+          theme = { ...DEFAULT_THEMES.light };
+          applyTheme();
+          saveTheme();
+          showToast('Đã khôi phục giao diện mặc định');
+        });
+      }
+
+      // Khởi chạy
+      loadState();
+      applyTheme();
+      updateDatePillsUI();
+      bindEvents();
+      switchTab('tasks');
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
