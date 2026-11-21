@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b6e69" id="metaThemeColor" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Việc cần làm" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <title>Việc cần làm</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-app: #f1f4f6;
+      --bg-card: #ffffff;
+      --bg-input: #eef3f5;
+      --bg-segment: #dde3e7;
+      --bg-pill: #eef3f5;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-subtle: #e2e8f0;
+      --accent: #0b6e69;
+      --accent-soft: rgba(11, 110, 105, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      min-height: 100dvh;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .app-shell {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 20px 104px;
+    }
+
+    .card-surface {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .task-main-input {
+      width: 100%;
+      background-color: var(--bg-input);
+      color: var(--text-main);
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 16px 18px;
+      font-size: 16px;
+      line-height: 1.4;
+      outline: none;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.2s ease;
+    }
+
+    .task-main-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .task-main-input:focus {
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .quick-pill {
+      background-color: var(--bg-pill);
+      color: var(--text-main);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      line-height: 1.2;
+    }
+
+    .quick-pill:hover {
+      border-color: var(--accent);
+    }
+
+    .quick-pill.active {
+      background-color: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .field-input {
+      width: 100%;
+      background-color: var(--bg-input);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14.5px;
+      outline: none;
+      transition: border-color 0.15s ease, background-color 0.2s ease;
+    }
+
+    .field-input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background-color: var(--accent);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.94;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.992);
+    }
+
+    .segment-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      background-color: var(--bg-segment);
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .segment-btn {
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .segment-btn.active {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .task-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 2px solid var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.15s ease;
+    }
+
+    .task-check.checked {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+      z-index: 30;
+    }
+
+    .bottom-nav-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background-color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .color-swatch {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.06);
+    }
+
+    .color-swatch.active {
+      border-color: var(--text-main);
+      box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- TAB 1: VIỆC CẦN LÀM -->
+    <main id="view-tasks">
+      <header class="mb-5">
+        <h1 class="text-[32px] font-bold tracking-tight leading-tight">Việc cần làm</h1>
+        <p id="taskSummaryText" class="text-[14px] mt-1" style="color: var(--text-muted);">Chưa có việc nào.</p>
+      </header>
+
+      <section class="card-surface p-4 sm:p-5 shadow-sm">
+        <form id="addTaskForm" class="space-y-4">
+          <input
+            id="taskInput"
+            type="text"
+            class="task-main-input"
+            placeholder="Thêm việc mới..."
+            autocomplete="off"
+          />
+
+          <div>
+            <div class="text-[13px] mb-2" style="color: var(--text-muted);">Nhắc vào ngày (không bắt buộc)</div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="quick-pill" data-preset="today">Hôm nay</button>
+              <button type="button" class="quick-pill" data-preset="tomorrow">Ngày mai</button>
+              <button type="button" class="quick-pill" data-preset="nextWeek">Tuần sau</button>
+              <button type="button" class="quick-pill active" data-preset="none">Không ngày</button>
+            </div>
+          </div>
+
+          <div>
+            <label id="dateLabel" for="taskDateInput" class="block text-[13px] mb-2" style="color: var(--text-muted);">
+              Chưa chọn ngày nhắc
+            </label>
+            <input
+              id="taskDateInput"
+              type="date"
+              class="field-input"
+            />
+          </div>
+
+          <button type="submit" class="btn-primary">Thêm việc</button>
+        </form>
+      </section>
+
+      <section class="mt-4">
+        <div class="segment-bar" role="tablist" aria-label="Lọc trạng thái công việc">
+          <button type="button" class="segment-btn active" data-filter="all">Tất cả</button>
+          <button type="button" class="segment-btn" data-filter="active">Chưa xong</button>
+          <button type="button" class="segment-btn" data-filter="done">Đã xong</button>
+        </div>
+
+        <div id="taskListContainer" class="mt-4 space-y-2.5"></div>
+      </section>
+    </main>
+
+    <!-- TAB 2: LỊCH NHẮC -->
+    <section id="view-schedule" class="hidden">
+      <header class="mb-5">
+        <h1 class="text-[32px] font-bold tracking-tight leading-tight">Lịch nhắc</h1>
+        <p class="text-[14px] mt-1" style="color: var(--text-muted);">Việc chưa xong có ngày, xếp theo thời gian.</p>
+      </header>
+
+      <div id="scheduleContainer" class="space-y-4"></div>
+    </section>
+
+    <!-- TAB 3: GIAO DIỆN -->
+    <section id="view-theme" class="hidden">
+      <header class="mb-5">
+        <h1 class="text-[32px] font-bold tracking-tight leading-tight">Giao diện</h1>
+        <p class="text-[14px] mt-1" style="color: var(--text-muted);">Thay đổi được áp dụng ngay và tự lưu lại.</p>
+      </header>
+
+      <div class="card-surface p-5 space-y-6 shadow-sm">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <div class="text-[15px] font-semibold">Chế độ</div>
+            <div id="modeLabelText" class="text-[13px]" style="color: var(--text-muted);">Sáng</div>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" id="btnLightMode" class="quick-pill">Sáng</button>
+            <button type="button" id="btnDarkMode" class="quick-pill">Tối</button>
+          </div>
+        </div>
+
+        <div class="border-t pt-5" style="border-color: var(--border-subtle);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[15px] font-semibold">Màu chủ đạo</span>
+            <input id="accentColorPicker" type="color" class="h-8 w-12 rounded cursor-pointer bg-transparent border-0" />
+          </div>
+          <div id="accentSwatches" class="flex flex-wrap gap-2.5"></div>
+        </div>
+
+        <div class="border-t pt-5" style="border-color: var(--border-subtle);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[15px] font-semibold">Màu nền</span>
+            <input id="bgAppColorPicker" type="color" class="h-8 w-12 rounded cursor-pointer bg-transparent border-0" />
+          </div>
+          <div id="bgAppSwatches" class="flex flex-wrap gap-2.5"></div>
+        </div>
+
+        <div class="border-t pt-5" style="border-color: var(--border-subtle);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[15px] font-semibold">Màu khung ô nhập việc</span>
+            <input id="bgCardColorPicker" type="color" class="h-8 w-12 rounded cursor-pointer bg-transparent border-0" />
+          </div>
+          <div id="bgCardSwatches" class="flex flex-wrap gap-2.5"></div>
+        </div>
+
+        <div class="border-t pt-5" style="border-color: var(--border-subtle);">
+          <div class="text-[13px] font-medium mb-2.5" style="color: var(--text-muted);">Xem thử</div>
+          <div class="card-surface p-4 space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="task-check checked">✓</span>
+              <div>
+                <div class="text-[15px] font-medium">Gọi điện cho khách</div>
+                <div class="text-[12.5px]" style="color: var(--accent);">Hôm nay</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="task-check"></span>
+              <div class="text-[15px] font-medium">Mua cà phê</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-1">
+          <button type="button" id="btnResetTheme" class="quick-pill">Khôi phục màu mặc định</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- THANH ĐIỀU HƯỚNG DƯỚI -->
+  <nav class="bottom-nav" aria-label="Điều hướng chính">
+    <div class="bottom-nav-inner">
+      <button type="button" class="nav-item active" data-tab="tasks">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+        <span>Việc làm</span>
+      </button>
+      <button type="button" class="nav-item" data-tab="schedule">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+        <span>Lịch nhắc</span>
+      </button>
+      <button type="button" class="nav-item" data-tab="theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 3a9 9 0 0 0 0 18V3z" />
+        </svg>
+        <span>Giao diện</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const TASKS_STORAGE_KEY = 'viec_can_lam_tasks_v1';
+    const THEME_STORAGE_KEY = 'viec_can_lam_theme_v1';
+
+    const DEFAULT_THEMES = {
+      light: {
+        mode: 'light',
+        accent: '#0b6e69',
+        bgApp: '#f1f4f6',
+        bgCard: '#ffffff',
+        bgInput: '#eef3f5',
+        bgSegment: '#dde3e7',
+        bgPill: '#eef3f5',
+        textMain: '#0f172a',
+        textMuted: '#64748b',
+        borderSubtle: '#e2e8f0'
+      },
+      dark: {
+        mode: 'dark',
+        accent: '#14b8a6',
+        bgApp: '#0b1117',
+        bgCard: '#121b24',
+        bgInput: '#192531',
+        bgSegment: '#1e2c3a',
+        bgPill: '#192531',
+        textMain: '#f1f5f9',
+        textMuted: '#94a3b8',
+        borderSubtle: '#243444'
+      }
+    };
+
+    const ACCENT_PRESETS = ['#0b6e69', '#0f766e', '#2563eb', '#7c3aed', '#c2410c', '#be123c'];
+    const BG_APP_LIGHT_PRESETS = ['#f1f4f6', '#eef2f6', '#f8fafc', '#f5f5f4', '#ecfdf5'];
+    const BG_APP_DARK_PRESETS = ['#0b1117', '#0f172a', '#111111', '#141218', '#0a1918'];
+    const BG_CARD_LIGHT_PRESETS = ['#ffffff', '#f8fafc', '#fefefe', '#f0fdf4'];
+    const BG_CARD_DARK_PRESETS = ['#121b24', '#1e293b', '#18181b', '#132220'];
+
+    let tasks = loadTasks();
+    let theme = loadTheme();
+    let currentFilter = 'all';
+    let currentTab = 'tasks';
+
+    const taskInput = document.getElementById('taskInput');
+    const taskDateInput = document.getElementById('taskDateInput');
+    const dateLabel = document.getElementById('dateLabel');
+    const addTaskForm = document.getElementById('addTaskForm');
+    const taskListContainer = document.getElementById('taskListContainer');
+    const scheduleContainer = document.getElementById('scheduleContainer');
+    const taskSummaryText = document.getElementById('taskSummaryText');
+
+    function toDateStr(offsetDays = 0) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + offsetDays);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function formatDisplayDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const [yyyy, mm, dd] = parts;
+      const today = toDateStr(0);
+      const tomorrow = toDateStr(1);
+      const formatted = `${dd}/${mm}/${yyyy}`;
+      if (dateStr === today) return `Hôm nay (${formatted})`;
+      if (dateStr === tomorrow) return `Ngày mai (${formatted})`;
+      return formatted;
+    }
+
+    function updateDateLabelAndPills() {
+      const val = taskDateInput.value;
+      const today = toDateStr(0);
+      const tomorrow = toDateStr(1);
+      const nextWeek = toDateStr(7);
+
+      dateLabel.textContent = val ? `Ngày nhắc: ${formatDisplayDate(val)}` : 'Chưa chọn ngày nhắc';
+
+      document.querySelectorAll('.quick-pill[data-preset]').forEach((btn) => {
+        const preset = btn.dataset.preset;
+        let isActive = false;
+        if (preset === 'none') isActive = !val;
+        else if (preset === 'today') isActive = val === today;
+        else if (preset === 'tomorrow') isActive = val === tomorrow;
+        else if (preset === 'nextWeek') isActive = val === nextWeek;
+        btn.classList.toggle('active', isActive);
+      });
+    }
+
+    document.querySelectorAll('.quick-pill[data-preset]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const preset = btn.dataset.preset;
+        if (preset === 'none') taskDateInput.value = '';
+        else if (preset === 'today') taskDateInput.value = toDateStr(0);
+        else if (preset === 'tomorrow') taskDateInput.value = toDateStr(1);
+        else if (preset === 'nextWeek') taskDateInput.value = toDateStr(7);
+        updateDateLabelAndPills();
+      });
+    });
+
+    taskDateInput.addEventListener('change', updateDateLabelAndPills);
+
+    function loadTasks() {
+      try {
+        const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveTasks() {
+      try {
+        localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+      } catch {}
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = (hex || '#0b6e69').replace('#', '');
+      if (clean.length !== 6) return `rgba(11, 110, 105, ${alpha})`;
+      const r = parseInt(clean.slice(0, 2), 16);
+      const g = parseInt(clean.slice(2, 4), 16);
+      const b = parseInt(clean.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function loadTheme() {
+      try {
+        const raw = localStorage.getItem(THEME_STORAGE_KEY);
+        if (!raw) return { ...DEFAULT_THEMES.light };
+        const parsed = JSON.parse(raw);
+        const base = parsed.mode === 'dark' ? DEFAULT_THEMES.dark : DEFAULT_THEMES.light;
+        return { ...base, ...parsed };
+      } catch {
+        return { ...DEFAULT_THEMES.light };
+      }
+    }
+
+    function saveTheme() {
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(theme));
+      } catch {}
+    }
+
+    function applyTheme() {
+      const root = document.documentElement;
+      root.style.setProperty('--bg-app', theme.bgApp);
+      root.style.setProperty('--bg-card', theme.bgCard);
+      root.style.setProperty('--bg-input', theme.bgInput);
+      root.style.setProperty('--bg-segment', theme.bgSegment);
+      root.style.setProperty('--bg-pill', theme.bgPill);
+      root.style.setProperty('--text-main', theme.textMain);
+      root.style.setProperty('--text-muted', theme.textMuted);
+      root.style.setProperty('--border-subtle', theme.borderSubtle);
+      root.style.setProperty('--accent', theme.accent);
+      root.style.setProperty('--accent-soft', hexToRgba(theme.accent, 0.14));
+
+      const metaTheme = document.getElementById('metaThemeColor');
+      if (metaTheme) metaTheme.setAttribute('content', theme.accent);
+
+      document.getElementById('modeLabelText').textContent = theme.mode === 'dark' ? 'Tối' : 'Sáng';
+      document.getElementById('btnLightMode').classList.toggle('active', theme.mode === 'light');
+      document.getElementById('btnDarkMode').classList.toggle('active', theme.mode === 'dark');
+
+      document.getElementById('accentColorPicker').value = theme.accent;
+      document.getElementById('bgAppColorPicker').value = theme.bgApp;
+      document.getElementById('bgCardColorPicker').value = theme.bgCard;
+
+      renderSwatches();
+      saveTheme();
+    }
+
+    function renderSwatches() {
+      const accentContainer = document.getElementById('accentSwatches');
+      const bgAppContainer = document.getElementById('bgAppSwatches');
+      const bgCardContainer = document.getElementById('bgCardSwatches');
+
+      const appPresets = theme.mode === 'dark' ? BG_APP_DARK_PRESETS : BG_APP_LIGHT_PRESETS;
+      const cardPresets = theme.mode === 'dark' ? BG_CARD_DARK_PRESETS : BG_CARD_LIGHT_PRESETS;
+
+      accentContainer.innerHTML = ACCENT_PRESETS.map((color) =>
+        `<button type="button" class="color-swatch ${theme.accent.toLowerCase() === color.toLowerCase() ? 'active' : ''}" style="background:${color}" data-set-accent="${color}" aria-label="Màu chủ đạo ${color}"></button>`
+      ).join('');
+
+      bgAppContainer.innerHTML = appPresets.map((color) =>
+        `<button type="button" class="color-swatch ${theme.bgApp.toLowerCase() === color.toLowerCase() ? 'active' : ''}" style="background:${color}; border-color: var(--border-subtle);" data-set-bgapp="${color}" aria-label="Màu nền ${color}"></button>`
+      ).join('');
+
+      bgCardContainer.innerHTML = cardPresets.map((color) =>
+        `<button type="button" class="color-swatch ${theme.bgCard.toLowerCase() === color.toLowerCase() ? 'active' : ''}" style="background:${color}; border-color: var(--border-subtle);" data-set-bgcard="${color}" aria-label="Màu khung ${color}"></button>`
+      ).join('');
+
+      accentContainer.querySelectorAll('[data-set-accent]').forEach((el) => {
+        el.addEventListener('click', () => {
+          theme.accent = el.dataset.setAccent;
+          applyTheme();
+        });
+      });
+
+      bgAppContainer.querySelectorAll('[data-set-bgapp]').forEach((el) => {
+        el.addEventListener('click', () => {
+          theme.bgApp = el.dataset.setBgapp;
+          applyTheme();
+        });
+      });
+
+      bgCardContainer.querySelectorAll('[data-set-bgcard]').forEach((el) => {
+        el.addEventListener('click', () => {
+          theme.bgCard = el.dataset.setBgcard;
+          applyTheme();
+        });
+      });
+    }
+
+    document.getElementById('btnLightMode').addEventListener('click', () => {
+      theme = { ...DEFAULT_THEMES.light };
+      applyTheme();
+    });
+
+    document.getElementById('btnDarkMode').addEventListener('click', () => {
+      theme = { ...DEFAULT_THEMES.dark };
+      applyTheme();
+    });
+
+    document.getElementById('accentColorPicker').addEventListener('input', (e) => {
+      theme.accent = e.target.value;
+      applyTheme();
+    });
+
+    document.getElementById('bgAppColorPicker').addEventListener('input', (e) => {
+      theme.bgApp = e.target.value;
+      applyTheme();
+    });
+
+    document.getElementById('bgCardColorPicker').addEventListener('input', (e) => {
+      theme.bgCard = e.target.value;
+      applyTheme();
+    });
+
+    document.getElementById('btnResetTheme').addEventListener('click', () => {
+      theme = theme.mode === 'dark' ? { ...DEFAULT_THEMES.dark } : { ...DEFAULT_THEMES.light };
+      applyTheme();
+    });
+
+    addTaskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = taskInput.value.trim();
+      if (!title) {
+        taskInput.focus();
+        return;
+      }
+      tasks.unshift({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        title,
+        date: taskDateInput.value || '',
+        done: false,
+        createdAt: Date.now()
+      });
+      saveTasks();
+      taskInput.value = '';
+      taskDateInput.value = '';
+      updateDateLabelAndPills();
+      renderAll();
+      taskInput.focus();
+    });
+
+    document.querySelectorAll('.segment-btn[data-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentFilter = btn.dataset.filter;
+        document.querySelectorAll('.segment-btn[data-filter]').forEach((b) => {
+          b.classList.toggle('active', b.dataset.filter === currentFilter);
+        });
+        renderTaskList();
+      });
+    });
+
+    document.querySelectorAll('.nav-item[data-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentTab = btn.dataset.tab;
+        document.querySelectorAll('.nav-item[data-tab]').forEach((b) => {
+          b.classList.toggle('active', b.dataset.tab === currentTab);
+        });
+        document.getElementById('view-tasks').classList.toggle('hidden', currentTab !== 'tasks');
+        document.getElementById('view-schedule').classList.toggle('hidden', currentTab !== 'schedule');
+        document.getElementById('view-theme').classList.toggle('hidden', currentTab !== 'theme');
+        renderAll();
+      });
+    });
+
+    function toggleTask(id) {
+      tasks = tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+      saveTasks();
+      renderAll();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter((t) => t.id !== id);
+      saveTasks();
+      renderAll();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&')
+        .replace(/</g, '<')
+        .replace(/>/g, '>')
+        .replace(/"/g, '"');
+    }
+
+    function renderSummary() {
+      const remaining = tasks.filter((t) => !t.done).length;
+      if (tasks.length === 0) {
+        taskSummaryText.textContent = 'Chưa có việc nào.';
+      } else if (remaining === 0) {
+        taskSummaryText.textContent = `Đã hoàn thành tất cả ${tasks.length} việc.`;
+      } else {
+        taskSummaryText.textContent = `Còn ${remaining} việc chưa xong / Tổng ${tasks.length} việc.`;
+      }
+    }
+
+    function renderTaskList() {
+      const filtered = tasks.filter((t) => {
+        if (currentFilter === 'active') return !t.done;
+        if (currentFilter === 'done') return t.done;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        if (tasks.length === 0) {
+          taskListContainer.innerHTML = `
+            <div class="text-center py-10 text-[14px] leading-relaxed" style="color: var(--text-muted);">
+              <div>Gõ việc đầu tiên ở ô phía trên.</div>
+              <div>Chọn ngày nếu muốn được nhắc.</div>
+            </div>
+          `;
+        } else {
+          taskListContainer.innerHTML = `
+            <div class="text-center py-10 text-[14px]" style="color: var(--text-muted);">
+              Không có việc nào trong mục này.
+            </div>
+          `;
+        }
+        return;
+      }
+
+      taskListContainer.innerHTML = filtered.map((t) => {
+        const dateBadge = t.date
+          ? `<div class="text-[12.5px] mt-0.5" style="color: var(--accent);">${escapeHtml(formatDisplayDate(t.date))}</div>`
+          : '';
+        return `
+          <div class="card-surface px-4 py-3.5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <button type="button" class="task-check ${t.done ? 'checked' : ''}" data-toggle="${t.id}" aria-label="Đánh dấu hoàn thành">
+                ${t.done ? '✓' : ''}
+              </button>
+              <div class="min-w-0">
+                <div class="text-[15px] font-medium break-words ${t.done ? 'line-through opacity-60' : ''}">${escapeHtml(t.title)}</div>
+                ${dateBadge}
+              </div>
+            </div>
+            <button type="button" class="text-xs px-2.5 py-1.5 rounded-lg opacity-70 hover:opacity-100" style="color: var(--text-muted);" data-delete="${t.id}" aria-label="Xóa việc">
+              Xóa
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      taskListContainer.querySelectorAll('[data-toggle]').forEach((btn) => {
+        btn.addEventListener('click', () => toggleTask(btn.dataset.toggle));
+      });
+      taskListContainer.querySelectorAll('[data-delete]').forEach((btn) => {
+        btn.addEventListener('click', () => deleteTask(btn.dataset.delete));
+      });
+    }
+
+    function renderSchedule() {
+      const scheduled = tasks
+        .filter((t) => !t.done && t.date)
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      if (scheduled.length === 0) {
+        scheduleContainer.innerHTML = `
+          <div class="card-surface p-8 text-center text-[14px]" style="color: var(--text-muted);">
+            Chưa có việc chưa xong nào có ngày nhắc.
+          </div>
+        `;
+        return;
+      }
+
+      const grouped = new Map();
+      scheduled.forEach((item) => {
+        if (!grouped.has(item.date)) grouped.set(item.date, []);
+        grouped.get(item.date).push(item);
+      });
+
+      scheduleContainer.innerHTML = Array.from(grouped.entries()).map(([dateKey, items]) => `
+        <div class="card-surface p-4 space-y-2.5">
+          <div class="text-[13.5px] font-semibold" style="color: var(--accent);">${escapeHtml(formatDisplayDate(dateKey))}</div>
+          ${items.map((t) => `
+            <div class="flex items-center gap-3 py-1">
+              <button type="button" class="task-check" data-sched-toggle="${t.id}" aria-label="Hoàn thành"></button>
+              <span class="text-[15px] font-medium">${escapeHtml(t.title)}</span>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+
+      scheduleContainer.querySelectorAll('[data-sched-toggle]').forEach((btn) => {
+        btn.addEventListener('click', () => toggleTask(btn.dataset.schedToggle));
+      });
+    }
+
+    function renderAll() {
+      renderSummary();
+      renderTaskList();
+      renderSchedule();
+    }
+
+    updateDateLabelAndPills();
+    applyTheme();
+    renderAll();
+  </script>
+</body>
+</html>
