@@ -59,6 +59,12 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 .bgp.on{border-color:var(--acc);font-weight:700}
 input[type=color]{width:56px;height:36px;border:1px solid var(--line);border-radius:8px;background:none;padding:2px}
 .row .d{flex:1}
+.dl{font-size:13px;color:var(--mute);padding:0 4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:7px 13px;font-size:14px}
+.chips button.on{background:var(--acc);color:var(--accfg);border-color:var(--acc);font-weight:500}
+.dti{display:block;width:100%;min-height:46px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;border-radius:10px;padding:8px 12px;text-align:left}
+.add .btn{width:100%;padding:12px}
 .hide{display:none}
 </style>
 </head>
@@ -69,7 +75,11 @@ input[type=color]{width:56px;height:36px;border:1px solid var(--line);border-rad
   <p class="sub" id="sum"></p>
   <div class="add">
    <input type="text" id="txt" placeholder="Thêm việc mới…" maxlength="200" enterkeyhint="done">
-   <div class="row"><input type="date" id="dt" aria-label="Ngày nhắc"><button class="btn" id="addBtn">Thêm việc</button></div>
+   <div class="dl">Nhắc vào ngày (không bắt buộc)</div>
+   <div class="chips" id="chips"><button data-q="0">Hôm nay</button><button data-q="1">Ngày mai</button><button data-q="7">Tuần sau</button><button data-q="x">Không ngày</button></div>
+   <div class="d" id="dshow">Chưa chọn ngày nhắc</div>
+   <input type="date" id="dt" class="dti" aria-label="Chọn ngày nhắc khác">
+   <button class="btn" id="addBtn">Thêm việc</button>
   </div>
   <div class="seg" id="seg"><button data-f="all" class="on">Tất cả</button><button data-f="open">Chưa xong</button><button data-f="done">Đã xong</button></div>
   <div id="list"></div>
@@ -127,7 +137,7 @@ function render(){
  var due=up.filter(function(t){return diff(t.date)<=0}).length;
  $("bd").textContent=due;$("bd").classList.toggle("hide",!due)}
 function add(){var v=$("txt").value.trim();if(!v){$("txt").focus();return}
- tasks.push({id:Date.now(),text:v,date:$("dt").value||"",done:false});save();$("txt").value="";$("dt").value="";render()}
+ tasks.push({id:Date.now(),text:v,date:$("dt").value||"",done:false});save();$("txt").value="";$("dt").value="";showDate();render()}
 function tab(n){[1,2,3].forEach(function(i){$("v"+i).classList.toggle("hide",n!==i);$("n"+i).classList.toggle("on",n===i)});window.scrollTo(0,0)}
 var TKEY="viec-can-lam-theme-v1",th={mode:"auto",acc:0,custom:"",bg:0};
 var ACC=[["Xanh ngọc","#0f766e","#2dd4bf"],["Xanh dương","#1d4ed8","#60a5fa"],["Tím","#7c3aed","#a78bfa"],["Hồng","#be185d","#f472b6"],["Đỏ","#b91c1c","#f87171"],["Cam","#c2410c","#fb923c"],["Xanh lá","#15803d","#4ade80"],["Đen","#18181b","#e4e4e7"]];
@@ -166,7 +176,13 @@ document.addEventListener("click",function(e){
 $("addBtn").onclick=add;
 $("txt").addEventListener("keydown",function(e){if(e.key==="Enter")add()});
 $("n1").onclick=function(){tab(1)};$("n2").onclick=function(){tab(2)};$("n3").onclick=function(){tab(3)};
-load();loadTheme();render();
+function addDays(n){var d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function showDate(){var v=$("dt").value;$("dshow").textContent=v?"Ngày nhắc: "+fmt(v):"Chưa chọn ngày nhắc";
+ document.querySelectorAll("#chips button").forEach(function(b){var q=b.dataset.q;b.classList.toggle("on",q==="x"?!v:v===addDays(+q))})}
+$("dt").addEventListener("click",function(){try{if(this.showPicker)this.showPicker()}catch(e){}});
+$("dt").addEventListener("change",showDate);$("dt").addEventListener("input",showDate);
+$("chips").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var q=b.dataset.q;$("dt").value=q==="x"?"":addDays(+q);showDate()});
+load();loadTheme();render();showDate();
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
 document.addEventListener("visibilitychange",function(){if(!document.hidden)render()});
 </script>

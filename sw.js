@@ -1,5 +1,5 @@
 // Đổi số phiên bản mỗi khi bạn sửa app để điện thoại tải bản mới
-var CACHE = "viec-can-lam-v1";
+var CACHE = "viec-can-lam-v3";
 var FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", function (e) {
